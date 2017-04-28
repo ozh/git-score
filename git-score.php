@@ -8,7 +8,7 @@
 
 namespace Ozh\Git;
 
-class Score{
+class Score {
 
     /**
      * @var const The git command which output we'll parse
@@ -31,7 +31,7 @@ class Score{
     /**
      * @var array Will collect the output of the git command
      */
-    private $gitlog  = array();
+    private $gitlog = array();
 
 
     /**
@@ -81,7 +81,7 @@ class Score{
 
         // remove first element of cmd line args, as it's the script file itself, and pass arguments to git
         array_shift($args);
-        if(!empty($args)) {
+        if (!empty($args)) {
             $cmd .= ' ' . implode(' ', $args);
         }
 
@@ -100,7 +100,7 @@ class Score{
         $this->gitlog = array();
 
         $handle = popen($cmd, 'r');
-        while(!feof($handle)) {
+        while (!feof($handle)) {
             $this->gitlog[] = fgets($handle, 4096);
         }
         pclose($handle);
@@ -112,7 +112,7 @@ class Score{
     public function parse_gitlog() {
         $current_author = array();
 
-        foreach($this->gitlog as $line) {
+        foreach ($this->gitlog as $line) {
 
             $line = trim($line);
             /*
@@ -122,10 +122,10 @@ class Score{
             ""
             */
 
-            if($this->is_new_commit($line)) {
+            if ($this->is_new_commit($line)) {
                 $current_author = $this->get_author($line);
 
-                if($this->is_new_author($current_author['email'])) {
+                if ($this->is_new_author($current_author['email'])) {
                     $this->add_empty_author($current_author);
                     $this->authors[$current_author['email']]['name'] = $current_author['name'];
                 }
@@ -133,7 +133,7 @@ class Score{
                 $line = '';
             }
 
-            if($line) {
+            if ($line) {
                 $stats = $this->get_stats($line);
 
                 $this->add_stats_to_author(
@@ -159,7 +159,7 @@ class Score{
      * @param array $data Array of $keys=>$values used to increment $keys of $this->authors[$email] with $values
      */
     public function add_stats_to_author($email, $data) {
-        foreach($data as $key => $value) {
+        foreach ($data as $key => $value) {
             $this->authors[$email][$key] += $value;
         }
     }
@@ -171,7 +171,7 @@ class Score{
      * @param string $file  Filename to be uniquely added to $this->authors[$email][$files]
      */
     public function add_files_to_author($email, $file) {
-        if(!in_array($file, $this->authors[$email]['files'])) {
+        if (!in_array($file, $this->authors[$email]['files'])) {
             $this->authors[$email]['files'][] = $file;
         }
     }
@@ -181,10 +181,10 @@ class Score{
      */
     public function print_stats() {
         // header
-        $this->print_line(array_combine($this->keys,$this->keys));
+        $this->print_line(array_combine($this->keys, $this->keys));
 
         // each line
-        foreach($this->authors as $author => $data) {
+        foreach ($this->authors as $author => $data) {
             $this->print_line($data);
         }
     }
@@ -199,7 +199,7 @@ class Score{
      */
     public function print_line($data) {
         $pad = STR_PAD_RIGHT;
-        foreach($this->widest as $key => $len) {
+        foreach ($this->widest as $key => $len) {
             echo str_pad($data[$key], $len + 1, ' ', $pad) . ' ';
             $pad = STR_PAD_LEFT;
 
@@ -213,16 +213,16 @@ class Score{
     public function set_stats_per_author() {
 
         // init widest cells, default value is the length of $keys (ie the header of the table to be printed)
-        foreach($this->keys as $key){
+        foreach ($this->keys as $key) {
             $this->widest[$key] = strlen($key);
         }
 
         // count files & delta, also get max width for each column
-        foreach($this->authors as $author => $stats) {
+        foreach ($this->authors as $author => $stats) {
             $this->authors[$author]['files'] = $stats['files'] = count($stats['files']);
             $this->authors[$author]['delta'] = $stats['(+)'] - $stats['(-)'];
 
-            foreach($this->keys as $key) {
+            foreach ($this->keys as $key) {
                 $this->widest[$key] = $this->get_widest($key, $stats[$key]);
             }
         }
@@ -309,7 +309,7 @@ class Score{
      */
     public function add_empty_author($author) {
         // Init all keys to 0
-        foreach($this->keys as $key) {
+        foreach ($this->keys as $key) {
             $this->authors[$author['email']][$key] = 0;
         }
         // But then overwrite these two to something else
