@@ -81,7 +81,7 @@ class Score{
 
         // remove first element of cmd line args, as it's the script file itself, and pass arguments to git
         array_shift($args);
-        if($args) {
+        if(!empty($args)) {
             $cmd .= ' ' . implode(' ', $args);
         }
 
