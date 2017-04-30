@@ -160,7 +160,7 @@ class Score {
      */
     public function add_stats_to_author($email, $data) {
         foreach ($data as $key => $value) {
-            $this->authors[$email][$key] += $value;
+            $this->authors[$email][$key] += (int)$value;
         }
     }
 
