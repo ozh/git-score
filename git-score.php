@@ -130,6 +130,13 @@ class Score {
                     $this->authors[$current_author['email']]['name'] = $current_author['name'];
                 }
 
+                $this->add_stats_to_author(
+                    $current_author['email'],
+                    array(
+                        'commits' => 1
+                    )
+                );
+
                 $line = '';
             }
 
@@ -139,7 +146,6 @@ class Score {
                 $this->add_stats_to_author(
                     $current_author['email'],
                     array(
-                        'commits' => 1,
                         '(+)'     => $stats['added'],
                         '(-)'     => $stats['deleted'],
                     )
