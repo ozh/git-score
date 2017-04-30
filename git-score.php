@@ -206,7 +206,7 @@ class Score {
     public function print_line($data) {
         $pad = STR_PAD_RIGHT;
         foreach ($this->widest as $key => $len) {
-            echo str_pad($data[$key], $len + 1, ' ', $pad) . ' ';
+            echo $this->mb_str_pad($data[$key], $len + 1, ' ', $pad) . ' ';
             $pad = STR_PAD_LEFT;
 
         }
@@ -321,6 +321,21 @@ class Score {
         // But then overwrite these two to something else
         $this->authors[$author['email']]['name']  = $author['name'];
         $this->authors[$author['email']]['files'] = array();
+    }
+
+    /**
+     * Multibyte str_pad
+     *
+     * @param string $input
+     * @param int $pad_length
+     * @param string $pad_string
+     * @param int $pad_type
+     * @return string
+     * @author Kari "Haprog" Sderholm - https://gist.github.com/nebiros/226350
+     */
+    function mb_str_pad($input, $pad_length, $pad_string = ' ', $pad_type = STR_PAD_RIGHT) {
+        $diff = strlen($input) - mb_strlen($input, 'UTF-8');
+        return str_pad($input, $pad_length + $diff, $pad_string, $pad_type);
     }
 
 }
